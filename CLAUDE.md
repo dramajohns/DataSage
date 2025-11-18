@@ -6,27 +6,27 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **DataSage** - An AI-powered data quality assistant that uses Claude API to provide intelligent data analysis, SQL query generation, and debugging assistance.
 
-**Current Phase: Phase 1 (Backend) - COMPLETE**
+**Current Phase: Phases 1 & 2 COMPLETE ✅**
 
-The FastAPI backend is fully functional with real Claude Sonnet 4.5 integration. The system can analyze CSV/Excel files and provide AI-powered data quality insights.
+Both the FastAPI backend and React frontend are fully functional. The system provides a complete full-stack experience: users upload CSV/Excel files through a modern web UI and receive AI-powered data quality insights from Claude Sonnet 4.5.
 
 **Tech Stack (Implemented):**
-- Backend: FastAPI + Pandas
-- AI: Claude API (Anthropic) - Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
-- Data Processing: Pandas, NumPy, OpenPyXL
+- **Backend:** FastAPI + Pandas + Pydantic
+- **Frontend:** React 19 + TypeScript + Vite + Tailwind CSS v3
+- **AI:** Claude API (Anthropic) - Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
+- **Data Processing:** Pandas, NumPy, OpenPyXL
 
 **Tech Stack (Planned - Not Yet Implemented):**
-- Frontend: React + TypeScript + Vite + Tailwind CSS
 - Database: PostgreSQL + SQLAlchemy + Alembic migrations
 - DevOps: Docker + Docker Compose + GitHub Actions
 - Deployment: AWS Free Tier / Railway / Render
-- Testing: Pytest test suite
+- Testing: Pytest test suite, React Testing Library
 
 ## Project Structure (Current)
 
 ```
-project_1/
-├── backend/              # FastAPI application (IMPLEMENTED)
+DataSage/
+├── backend/              # FastAPI application (PHASE 1 - COMPLETE ✅)
 │   ├── app/
 │   │   ├── api/         # API endpoints
 │   │   │   ├── health.py       # Health check endpoint
@@ -40,19 +40,38 @@ project_1/
 │   │   │   ├── mock_claude_service.py  # Mock service for testing
 │   │   │   └── data_profiler.py        # Pandas data profiling
 │   │   └── main.py      # FastAPI app entry point
-│   ├── alembic/         # Database migrations (EMPTY - not implemented yet)
-│   ├── tests/           # Backend tests (EMPTY - not implemented yet)
+│   ├── alembic/         # Database migrations (EMPTY - Phase 3)
+│   ├── tests/           # Backend tests (EMPTY - Phase 3)
 │   ├── requirements.txt # Python dependencies
 │   └── .env             # Environment variables (API keys, etc.)
-├── aboutme/             # Personal information files
+├── frontend/            # React application (PHASE 2 - COMPLETE ✅)
+│   ├── src/
+│   │   ├── components/  # React components
+│   │   │   ├── FileUpload.tsx   # Drag-and-drop file upload UI
+│   │   │   ├── DataProfile.tsx  # Data statistics display
+│   │   │   └── AIInsights.tsx   # AI analysis results display
+│   │   ├── services/    # API integration layer
+│   │   │   └── api.ts           # Backend API calls
+│   │   ├── types/       # TypeScript type definitions
+│   │   │   └── analysis.ts      # Data models (matches backend)
+│   │   ├── App.tsx      # Main application component
+│   │   ├── main.tsx     # React entry point
+│   │   └── index.css    # Tailwind CSS imports
+│   ├── package.json     # Node.js dependencies
+│   ├── vite.config.ts   # Vite configuration
+│   ├── tailwind.config.js  # Tailwind CSS config
+│   ├── tsconfig.json    # TypeScript configuration
+│   └── .env             # Frontend environment variables
+├── aboutme/             # Personal information files (CV, etc.)
 ├── .claude/             # Claude Code configuration
 ├── CLAUDE.md            # This file - Claude Code guidance
 ├── PROJECT_DOCUMENTATION.md  # Detailed project documentation
 ├── LEARNING_JOURNAL.md       # Development learning notes
+├── README.md            # Project README
 └── test_data.csv        # Sample CSV file for testing
 ```
 
-**Note:** Frontend, database models, Docker setup, and tests directories exist in requirements.txt but are not yet implemented.
+**Note:** Database models, Docker setup, and comprehensive tests are planned for future phases.
 
 ## Development Commands
 
@@ -84,6 +103,46 @@ curl -X POST http://localhost:8000/api/v1/analysis/analyze \
   -F "file=@test_data.csv"
 ```
 
+### Frontend Development (Working Commands)
+```bash
+# Setup (one-time)
+cd /mnt/c/Users/fedib/projects/DataSage/frontend
+npm install
+
+# Configure environment (optional - already set for localhost)
+echo "VITE_API_URL=http://localhost:8000" > .env
+
+# Run development server (with hot reload)
+npm run dev
+
+# Access frontend
+# Open browser to: http://localhost:5173/
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
+
+### Full-Stack Development (Both Servers)
+Run these in **two separate terminals**:
+
+**Terminal 1 - Backend:**
+```bash
+cd /mnt/c/Users/fedib/projects/DataSage/backend
+source venv/bin/activate
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+**Terminal 2 - Frontend:**
+```bash
+cd /mnt/c/Users/fedib/projects/DataSage/frontend
+npm run dev
+```
+
+Then open http://localhost:5173/ for the full application!
+
 ### Commands NOT Yet Available
 The following commands are planned for future phases but do not work yet:
 
@@ -94,11 +153,6 @@ pytest tests/ -v
 # Database migrations - NOT IMPLEMENTED (no DB models yet)
 alembic upgrade head
 alembic revision --autogenerate -m "description"
-
-# Frontend - NOT IMPLEMENTED (frontend/ directory doesn't exist)
-cd frontend
-npm install
-npm run dev
 
 # Docker - NOT IMPLEMENTED (no docker-compose.yml yet)
 docker-compose up -d
@@ -114,16 +168,38 @@ docker-compose up -d
 - **Response Parsing**: Includes markdown code block parser to handle ```json``` wrapped responses
 - **Mock Service**: `mock_claude_service.py` provides realistic responses for testing without API key
 
-### Data Analysis Flow (CURRENT IMPLEMENTATION)
-1. File upload → FastAPI endpoint receives CSV/Excel file
-2. File validation (type, size limits)
-3. Pandas DataFrame created via DataProfiler
-4. Profile data generated (row count, column count, null percentages, data types)
-5. Profile sent to Claude with structured prompt asking for JSON response
-6. Claude returns JSON with: insights, quality_score, recommendations
-7. Response parsed (with markdown code block handling)
-8. Results returned to client as DataProfileResponse
-9. **Note**: No database storage yet - responses are not persisted
+### Frontend Architecture (IMPLEMENTED)
+- **Framework**: React 19 with modern hooks (useState, useCallback)
+- **Language**: TypeScript for type safety
+- **Build Tool**: Vite (fast HMR, optimized builds)
+- **Styling**: Tailwind CSS v3 (utility-first, responsive design)
+- **State Management**: Component-level useState (no Redux needed yet)
+- **Component Structure**:
+  - `App.tsx` - Main container with state management
+  - `FileUpload.tsx` - Drag-and-drop file upload with validation
+  - `DataProfile.tsx` - Data statistics visualization with tables
+  - `AIInsights.tsx` - AI analysis results display
+- **API Layer**: `services/api.ts` - Centralized backend communication
+- **Type Safety**: `types/analysis.ts` - TypeScript interfaces matching backend Pydantic schemas
+- **Error Handling**: Comprehensive error states with user-friendly messages
+- **Loading States**: Visual feedback during API calls
+
+### Full-Stack Data Analysis Flow (CURRENT IMPLEMENTATION)
+**Frontend → Backend → AI → Frontend:**
+
+1. **User uploads file** → React FileUpload component (drag-and-drop or click)
+2. **Client-side validation** → File type and size checked before upload
+3. **API request** → frontend/src/services/api.ts sends file to backend
+4. **FastAPI receives** → backend endpoint validates and processes
+5. **Pandas profiling** → DataFrame created, statistics generated
+6. **Claude AI analysis** → Profile sent to Claude Sonnet 4.5 with structured prompt
+7. **AI response** → Claude returns JSON (insights, quality_score, recommendations)
+8. **Response parsing** → Markdown code blocks handled, JSON extracted
+9. **Return to frontend** → DataProfileResponse sent back
+10. **UI update** → React components display results:
+    - DataProfile shows statistics tables
+    - AIInsights shows AI analysis and recommendations
+11. **Note**: No database storage yet - responses are not persisted
 
 ### Security (CURRENT IMPLEMENTATION)
 - API keys stored in environment variables via python-dotenv (never committed)
@@ -145,9 +221,9 @@ The SQLAlchemy and Alembic dependencies are installed but no models exist yet. P
 
 ## Environment Variables
 
-### Required (Current Implementation)
+### Backend Environment (backend/.env)
 ```bash
-# backend/.env
+# Required
 ANTHROPIC_API_KEY=sk-ant-xxx  # Get from https://console.anthropic.com/
 
 # Optional (have defaults in config.py)
@@ -156,6 +232,13 @@ MAX_FILE_SIZE_MB=10
 ALLOWED_FILE_TYPES=csv,xlsx,xls
 ```
 
+### Frontend Environment (frontend/.env)
+```bash
+# API URL for backend communication
+VITE_API_URL=http://localhost:8000
+```
+**Note**: Frontend .env is optional - defaults to localhost:8000 if not specified.
+
 ### Planned (Not Yet Used)
 ```bash
 # Database (PostgreSQL not integrated yet)
@@ -163,14 +246,12 @@ DATABASE_URL=postgresql://user:pass@localhost:5432/datasage
 
 # Authentication (not implemented yet)
 JWT_SECRET_KEY=random-secret-key
-
-# Frontend (doesn't exist yet)
-VITE_API_URL=http://localhost:8000
 ```
 
 ## Key Design Decisions
 
 ### Implemented
+**Backend:**
 1. **FastAPI over Flask/Django**: Type safety, automatic API docs, async support
 2. **Pydantic schemas**: Validate all input/output for type safety
 3. **Service layer pattern**: Business logic separated from routes (testability and maintainability)
@@ -178,15 +259,44 @@ VITE_API_URL=http://localhost:8000
 5. **Inline prompts**: Prompts embedded in service methods for simplicity (can refactor later)
 6. **Mock service pattern**: Allows testing without consuming API credits
 
+**Frontend:**
+7. **React 19 + TypeScript**: Type safety reduces bugs, modern hooks, best practices
+8. **Vite over Create React App**: 10x faster builds, instant HMR, modern tooling
+9. **Tailwind CSS over custom CSS**: Utility-first approach, faster development, consistent design
+10. **Component-level state**: useState instead of Redux (simpler for current scale)
+11. **Type-safe API layer**: TypeScript interfaces match Pydantic schemas exactly
+12. **User validation implementation**: Client-side validation with your custom code (learn-by-doing approach)
+
 ### Planned (Future)
 1. **Docker Compose**: Consistent dev environment across machines
-2. **TypeScript frontend**: Type safety reduces bugs in production
-3. **PostgreSQL**: Persistent storage for analysis results and user data
-4. **Prompt templates**: Move prompts to separate files for maintainability
+2. **PostgreSQL**: Persistent storage for analysis results and user data
+3. **Prompt templates**: Move prompts to separate files for maintainability
+4. **Advanced charts**: Data visualization with Recharts
+5. **Testing**: Pytest (backend) + React Testing Library (frontend)
 
 ## Common Workflows
 
-### Testing the Current Backend
+### Testing the Full-Stack Application (Recommended)
+1. **Start backend** (Terminal 1):
+   ```bash
+   cd /mnt/c/Users/fedib/projects/DataSage/backend
+   source venv/bin/activate
+   uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+   ```
+
+2. **Start frontend** (Terminal 2):
+   ```bash
+   cd /mnt/c/Users/fedib/projects/DataSage/frontend
+   npm run dev
+   ```
+
+3. **Access the application**:
+   - Open browser: http://localhost:5173/
+   - Upload a CSV/Excel file using drag-and-drop or click
+   - View AI-generated insights, quality score, and recommendations
+   - See data profile with interactive tables
+
+### Testing Backend Only (API)
 1. Ensure virtual environment is activated
 2. Start the server: `uvicorn app.main:app --reload --host 0.0.0.0 --port 8000`
 3. Open Swagger docs: http://localhost:8000/docs

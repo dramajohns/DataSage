@@ -28,8 +28,9 @@ DataSage is an intelligent data analysis tool that leverages Claude AI to provid
 
 ## ✨ Features
 
-### Current Features (Phase 1 ✅)
+### Current Features (Phases 1 & 2 ✅)
 
+**Backend (Phase 1):**
 - **🤖 AI-Powered Analysis**: Leverages Claude Sonnet 4.5 for intelligent data quality insights
 - **📊 Automated Data Profiling**: Comprehensive statistics including nulls, types, distributions
 - **📁 Multiple File Formats**: Support for CSV and Excel files (.csv, .xlsx, .xls)
@@ -38,14 +39,22 @@ DataSage is an intelligent data analysis tool that leverages Claude AI to provid
 - **🔒 Secure**: Environment-based configuration, no hardcoded secrets
 - **🧪 Mock Mode**: Test without consuming API credits
 
+**Frontend (Phase 2):**
+- **🎨 Modern React UI**: Beautiful interface with drag-and-drop file upload
+- **⚡ Real-time Analysis**: Live progress indicators and loading states
+- **📈 Data Visualization**: Interactive tables with column statistics and quality metrics
+- **🤖 AI Insights Display**: Formatted AI-generated recommendations and insights
+- **📱 Responsive Design**: Works seamlessly on desktop and mobile
+- **🎯 Type-Safe**: Full TypeScript implementation with type safety
+- **✨ Professional UX**: Tailwind CSS styling with smooth animations
+
 ### Planned Features (Coming Soon)
 
-- **🎨 React Frontend**: Modern UI with drag-and-drop file upload
 - **💾 Database Integration**: PostgreSQL for storing analysis history
 - **🔐 User Authentication**: JWT-based secure access
 - **🔍 SQL Generation**: Natural language to SQL query translation
 - **🐛 Error Debugging**: AI-assisted data error diagnosis
-- **📈 Data Visualization**: Interactive charts and graphs
+- **📊 Advanced Charts**: Interactive data visualizations with Recharts
 - **🐳 Docker Support**: Containerized deployment
 
 ---
@@ -102,18 +111,18 @@ Visit `http://localhost:8000/docs` for the interactive API documentation:
 
 ## 🛠️ Tech Stack
 
-### Backend (Implemented)
+### Backend (Implemented ✅)
 - **[FastAPI](https://fastapi.tiangolo.com/)** - Modern, high-performance web framework
 - **[Pandas](https://pandas.pydata.org/)** - Data analysis and manipulation
 - **[Pydantic](https://docs.pydantic.dev/)** - Data validation using Python type hints
 - **[Anthropic Claude API](https://www.anthropic.com/api)** - Claude Sonnet 4.5 for AI analysis
 - **[Python 3.9+](https://www.python.org/)** - Programming language
 
-### Frontend (Planned - Phase 2)
-- **React 18 + TypeScript** - UI framework with type safety
-- **Vite** - Fast build tool
-- **Tailwind CSS** - Utility-first styling
-- **Recharts** - Data visualization
+### Frontend (Implemented ✅)
+- **[React 19](https://react.dev/)** - Latest React with modern hooks
+- **[TypeScript](https://www.typescriptlang.org/)** - Type-safe JavaScript
+- **[Vite](https://vitejs.dev/)** - Lightning-fast build tool with HMR
+- **[Tailwind CSS v3](https://tailwindcss.com/)** - Utility-first CSS framework
 
 ### Infrastructure (Planned - Phase 3+)
 - **PostgreSQL** - Database
@@ -128,9 +137,10 @@ Visit `http://localhost:8000/docs` for the interactive API documentation:
 
 ### Prerequisites
 
-- Python 3.9 or higher
-- pip (Python package manager)
-- Claude API key ([Get one here](https://console.anthropic.com/) - $5 free credit)
+- **Python 3.9+** - Backend language
+- **Node.js 18+** - Frontend runtime
+- **npm** - Package manager (comes with Node.js)
+- **Claude API key** - Get free $5 credit at [console.anthropic.com](https://console.anthropic.com/)
 
 ### Installation
 
@@ -148,7 +158,7 @@ Visit `http://localhost:8000/docs` for the interactive API documentation:
    pip install -r requirements.txt
    ```
 
-3. **Configure environment variables**
+3. **Configure backend environment**
    ```bash
    cp .env.example .env
    ```
@@ -158,14 +168,37 @@ Visit `http://localhost:8000/docs` for the interactive API documentation:
    ANTHROPIC_API_KEY=sk-ant-your-api-key-here
    ```
 
-4. **Run the development server**
+4. **Set up the frontend**
    ```bash
+   cd ../frontend
+   npm install
+   ```
+
+5. **Configure frontend environment** (optional)
+   ```bash
+   # Create .env file (already configured for localhost)
+   echo "VITE_API_URL=http://localhost:8000" > .env
+   ```
+
+6. **Run the application** (requires 2 terminals)
+
+   **Terminal 1 - Backend:**
+   ```bash
+   cd backend
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
    uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
    ```
 
-5. **Test the API**
-   - Visit http://localhost:8000/docs for interactive documentation
-   - Try the health check: http://localhost:8000/health
+   **Terminal 2 - Frontend:**
+   ```bash
+   cd frontend
+   npm run dev
+   ```
+
+7. **Access the application**
+   - **Frontend UI**: http://localhost:5173/
+   - **Backend API Docs**: http://localhost:8000/docs
+   - **Health Check**: http://localhost:8000/health
 
 ### Testing Without API Key
 
@@ -236,11 +269,26 @@ datasage/
 │   │   │   ├── mock_claude_service.py  # Mock for testing
 │   │   │   └── data_profiler.py        # Pandas data profiling
 │   │   └── main.py            # FastAPI app entry point
-│   ├── tests/                 # Unit and integration tests (Phase 2)
+│   ├── tests/                 # Unit and integration tests (Phase 3)
 │   ├── requirements.txt       # Python dependencies
 │   ├── .env.example          # Environment template
 │   └── .gitignore            # Git ignore rules
-├── frontend/                  # React frontend (Phase 2 - PLANNED)
+├── frontend/                  # React frontend (Phase 2 - COMPLETE ✅)
+│   ├── src/
+│   │   ├── components/        # React components
+│   │   │   ├── FileUpload.tsx      # Drag-and-drop file upload
+│   │   │   ├── DataProfile.tsx     # Data statistics display
+│   │   │   └── AIInsights.tsx      # AI analysis results
+│   │   ├── services/          # API integration layer
+│   │   │   └── api.ts         # Backend API calls
+│   │   ├── types/             # TypeScript type definitions
+│   │   │   └── analysis.ts    # Data models matching backend
+│   │   ├── App.tsx            # Main application component
+│   │   └── main.tsx           # React entry point
+│   ├── package.json           # Node.js dependencies
+│   ├── vite.config.ts         # Vite configuration
+│   ├── tailwind.config.js     # Tailwind CSS config
+│   └── .env                   # Frontend environment vars
 ├── .claude/                   # Claude Code commands
 │   └── commands/
 │       ├── document.md        # Auto-documentation
@@ -302,13 +350,15 @@ mypy app/
 - [x] Auto-generated API documentation
 - [x] Mock service for testing
 
-### 🔄 Phase 2: Frontend Development (IN PROGRESS)
-- [ ] React + TypeScript setup with Vite
-- [ ] File upload UI with drag-and-drop
-- [ ] Data profile visualization
-- [ ] AI insights display with formatting
-- [ ] Responsive design with Tailwind CSS
-- [ ] Error handling and loading states
+### ✅ Phase 2: Frontend Development (COMPLETE)
+- [x] React 19 + TypeScript setup with Vite
+- [x] File upload UI with drag-and-drop
+- [x] Data profile visualization with interactive tables
+- [x] AI insights display with formatted recommendations
+- [x] Responsive design with Tailwind CSS v3
+- [x] Complete error handling and loading states
+- [x] Type-safe API service layer
+- [x] Professional UX with animations
 
 ### 📋 Phase 3: Database Integration
 - [ ] PostgreSQL setup
@@ -384,7 +434,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📊 Project Stats
 
 ![Phase 1 Complete](https://img.shields.io/badge/Phase%201-Complete-brightgreen)
-![Lines of Code](https://img.shields.io/badge/lines%20of%20code-1613+-blue)
-![Files](https://img.shields.io/badge/files-26-orange)
-![Commits](https://img.shields.io/badge/commits-3-yellow)
+![Phase 2 Complete](https://img.shields.io/badge/Phase%202-Complete-brightgreen)
+![Lines of Code](https://img.shields.io/badge/lines%20of%20code-3000+-blue)
+![Files](https://img.shields.io/badge/files-35+-orange)
+![Commits](https://img.shields.io/badge/commits-4-yellow)
 
