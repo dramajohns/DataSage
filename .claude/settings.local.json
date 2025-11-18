@@ -1,3 +1,9 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(npm cache clean --force)",
+      "Bash(wc:*)"
+    ]
+  },
   "outputStyle": "Learning"
 }
